@@ -1,0 +1,298 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: VPC
+Parameters:
+  # Project Name Parameter
+  RequesterProjectPrefix:
+    Type: String
+    Default: "requester-"
+
+  RequesterVpcCidr:
+    Type: String
+    Default: "10.0.0.0/16"
+
+  RequesterPublicSubnetACidr:
+    Type: String
+    Default: "10.0.0.0/24"
+  RequesterPublicSubnetBCidr:
+    Type: String
+    Default: "10.0.32.0/24"
+  RequesterPublicSubnetCCidr:
+    Type: String
+    Default: "10.0.64.0/24"
+  RequesterPublicSubnetDCidr:
+    Type: String
+    Default: "10.0.96.0/24"
+
+  RequesterPrivateSubnetACidr:
+    Type: String
+    Default: "10.0.128.0/24"
+  RequesterPrivateSubnetBCidr:
+    Type: String
+    Default: "10.0.160.0/24"
+  RequesterPrivateSubnetCCidr:
+    Type: String
+    Default: "10.0.192.0/24"
+  RequesterPrivateSubnetDCidr:
+    Type: String
+    Default: "10.0.224.0/24"
+
+Resources:
+  # ------------------------------------------------------------#
+  #
+  #
+  # VPC Requester
+  #
+  #
+  # ------------------------------------------------------------#
+  # ------------------------------------------------------------#
+  #  VPC
+  # ------------------------------------------------------------#
+  RequesterVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref RequesterVpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}vpc"
+  RequesterInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}igw"
+  RequesterInternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref RequesterInternetGateway
+      VpcId: !Ref RequesterVPC
+
+  # ------------------------------------------------------------#
+  #  Subnet
+  # ------------------------------------------------------------#
+  RequesterPublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Sub ${AWS::Region}a
+      CidrBlock: !Ref RequesterPublicSubnetACidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-subnet-a"
+  RequesterPublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Sub ${AWS::Region}b
+      CidrBlock: !Ref RequesterPublicSubnetBCidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-subnet-b"
+  RequesterPublicSubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Sub ${AWS::Region}c
+      CidrBlock: !Ref RequesterPublicSubnetCCidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-subnet-c"
+  RequesterPublicSubnetD:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Sub ${AWS::Region}d
+      CidrBlock: !Ref RequesterPublicSubnetDCidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-subnet-d"
+
+  RequesterPrivateSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: !Sub ${AWS::Region}a
+      CidrBlock: !Ref RequesterPrivateSubnetACidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-subnet-a"
+  RequesterPrivateSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: !Sub ${AWS::Region}b
+      CidrBlock: !Ref RequesterPrivateSubnetBCidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-subnet-b"
+  RequesterPrivateSubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: !Sub ${AWS::Region}c
+      CidrBlock: !Ref RequesterPrivateSubnetCCidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-subnet-c"
+  RequesterPrivateSubnetD:
+    Type: AWS::EC2::Subnet
+    Properties:
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: !Sub ${AWS::Region}d
+      CidrBlock: !Ref RequesterPrivateSubnetDCidr
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-subnet-d"
+
+  # ------------------------------------------------------------#
+  #  RouteTable
+  # ------------------------------------------------------------#
+  RequesterPublicRouteTableA:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-route-a"
+  RequesterPublicRouteTableB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-route-b"
+  RequesterPublicRouteTableC:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-route-c"
+  RequesterPublicRouteTableD:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}public-route-d"
+
+  RequesterPrivateRouteTableA:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-route-a"
+  RequesterPrivateRouteTableB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-route-b"
+  RequesterPrivateRouteTableC:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-route-c"
+  RequesterPrivateRouteTableD:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref RequesterVPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${RequesterProjectPrefix}private-route-d"
+
+  # ------------------------------------------------------------#
+  # Routing
+  # ------------------------------------------------------------#
+  RequesterPublicRouteA:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - RequesterInternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RequesterPublicRouteTableA
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref RequesterInternetGateway
+  RequesterPublicRouteB:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - RequesterInternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RequesterPublicRouteTableB
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref RequesterInternetGateway
+  RequesterPublicRouteC:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - RequesterInternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RequesterPublicRouteTableC
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref RequesterInternetGateway
+  RequesterPublicRouteD:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - RequesterInternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RequesterPublicRouteTableD
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref RequesterInternetGateway
+
+  # ------------------------------------------------------------#
+  # RouteTable Associate
+  # ------------------------------------------------------------#
+  RequesterPublicSubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPublicSubnetA
+      RouteTableId: !Ref RequesterPublicRouteTableA
+  RequesterPublicSubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPublicSubnetB
+      RouteTableId: !Ref RequesterPublicRouteTableB
+  RequesterPublicSubnetCRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPublicSubnetC
+      RouteTableId: !Ref RequesterPublicRouteTableC
+  RequesterPublicSubnetDRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPublicSubnetD
+      RouteTableId: !Ref RequesterPublicRouteTableD
+
+  RequesterPrivateSubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPrivateSubnetA
+      RouteTableId: !Ref RequesterPrivateRouteTableA
+  RequesterPrivateSubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPrivateSubnetB
+      RouteTableId: !Ref RequesterPrivateRouteTableB
+  RequesterPrivateSubnetCRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPrivateSubnetC
+      RouteTableId: !Ref RequesterPrivateRouteTableC
+  RequesterPrivateSubnetDRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RequesterPrivateSubnetD
+      RouteTableId: !Ref RequesterPrivateRouteTableD
